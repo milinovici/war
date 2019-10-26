@@ -51,3 +51,57 @@ console.log("------------------------------");
 console.log("Shuffled deck:");
 console.log(deck);
 console.log("------------------------------");
+
+function renderCards() {
+    let deckElement = document.getElementById("deck");
+    deckElement.innerHTML = "";
+
+    for (let i = 0; i < deck.length; i++) {
+        let cardContainerElement = document.createElement("div");
+        cardContainerElement.className = 'card-container';
+
+        let cardElement = document.createElement("div");
+        cardElement.className = "card";
+        cardElement.id = `card-${i+1}`;
+        cardContainerElement.appendChild(cardElement);
+
+        let cardFaceElement = document.createElement("div");
+        cardFaceElement.className = 'card-face';
+
+        let cardFaceValueElement = document.createElement("div");
+        cardFaceValueElement.className = 'card-value';
+        cardFaceValueElement.innerHTML = deck[i].value;
+        cardFaceElement.appendChild(cardFaceValueElement);
+
+        let cardFaceTypeElement = document.createElement("div");
+        cardFaceElement.appendChild(cardFaceTypeElement);
+        switch (deck[i].type) {
+            case "hearts":
+                cardFaceTypeElement.className = 'card-type-hearts';
+                break;
+            case "spades":
+                cardFaceTypeElement.className = 'card-type-spades';
+                break;
+            case "diamonds":
+                cardFaceTypeElement.className = 'card-type-diamonds';
+                break;
+            case "clubs":
+                cardFaceTypeElement.className = 'card-type-clubs';
+                break;
+            default:
+                break;
+        }
+
+        let cardBackElement = document.createElement("div");
+        cardBackElement.className = 'card-back';
+
+        cardElement.appendChild(cardFaceElement);
+        cardElement.appendChild(cardBackElement);
+        deckElement.appendChild(cardContainerElement);
+    }
+}
+
+function dealCards() {
+    deck = shuffleDeck();
+    renderCards();
+}
