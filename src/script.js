@@ -70,7 +70,7 @@ function renderCards(deck, deckElementID) {
 
         let cardElement = document.createElement("div");
         cardElement.className = "card";
-        cardElement.setAttribute('cardValue', deck[i].value);
+        cardElement.id = `${deck[i].value}-${deck[i].type}-${deckElementID}`;
         cardContainerElement.appendChild(cardElement);
 
         let cardFaceElement = document.createElement("div");
@@ -124,7 +124,14 @@ function renderCards(deck, deckElementID) {
     }
 }
 
+let disablePlayBtnTimeoutHandle;
+
 function dealCards() {
+    clearTimeout(disablePlayBtnTimeoutHandle);
+
+    document.getElementsByClassName("play-btn")[0].disabled = true;
+    document.getElementsByClassName("play-btn")[0].classList.add('btn--disabled');
+
     deck = createDeck();
     opponentDeck = createDeck();
 
@@ -133,26 +140,60 @@ function dealCards() {
 
     renderCards(deck, "deck");
     renderCards(opponentDeck, "opponent-deck");
+
+    var cardElements = document.getElementsByClassName("card");
+    for (var i = 0; i < cardElements.length; i++) {
+        cardElements[i].classList.add('card--anim')
+    }
+
+    disablePlayBtnTimeoutHandle = setTimeout(function() {
+        document.getElementsByClassName("play-btn")[0].disabled = false;
+        document.getElementsByClassName("play-btn")[0].classList.remove('btn--disabled');
+    }, 2000);
 }
 
 function play () {
+    var cardElements = document.getElementsByClassName("card");
+    for (var i = 0; i < cardElements.length; i++) {
+        cardElements[i].classList.remove('card--anim')
+    }
+
+    document.getElementsByClassName("play-btn")[0].disabled = true;
+    document.getElementsByClassName("play-btn")[0].classList.toggle('btn--disabled');
+    document.getElementsByClassName("deal-btn")[0].disabled = true;
+    document.getElementsByClassName("deal-btn")[0].classList.toggle('btn--disabled');
+
+    let firstCardElement = document.getElementById(`${deck[0].value}-${deck[0].type}-deck`);
+    let firstOpponentCardElement = document.getElementById(`${opponentDeck[0].value}-${opponentDeck[0].type}-opponent-deck`);
+
+    firstCardElement.style.transform = "rotateY(0)";
+    firstOpponentCardElement.style.transform = "rotateY(0)";
+
     if (deck[0].value > opponentDeck[0].value) {
         deck.push(opponentDeck[0]);
         opponentDeck.splice(0, 1);
         deck.push(deck.shift());
+        document.getElementById("deck").classList.toggle('play-board--flash');
     } else if (deck[0].value < opponentDeck[0].value) {
         opponentDeck.push(deck[0]);
         deck.splice(0, 1);
         opponentDeck.push(opponentDeck.shift());
+        document.getElementById("opponent-deck").classList.toggle('play-board--flash');
     } else if (deck[0].value === opponentDeck[0].value) {
         deck.push(deck.shift());
         opponentDeck.push(opponentDeck.shift());
     }
 
-    renderCards(deck, "deck");
-    renderCards(opponentDeck, "opponent-deck");
-}
+    setTimeout(function() {
+        document.getElementById("deck").classList.remove('play-board--flash');
+        document.getElementById("opponent-deck").classList.remove('play-board--flash');
 
-// for (let i = 1; i <= 10000; i++) {
-//     play();
-// }
+        renderCards(deck, "deck");
+        renderCards(opponentDeck, "opponent-deck");
+
+        document.getElementsByClassName("play-btn")[0].disabled = false;
+        document.getElementsByClassName("play-btn")[0].classList.toggle('btn--disabled');
+        document.getElementsByClassName("deal-btn")[0].disabled = false;
+        document.getElementsByClassName("deal-btn")[0].classList.toggle('btn--disabled');
+    }, 1000);
+}
