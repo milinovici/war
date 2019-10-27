@@ -5,8 +5,12 @@
 
     <body>
         <button class="deal-btn" onclick="dealCards()">Deal Cards</button>
-        <button class="play-btn" onclick="play()">Play Card</button>
-        <div id="deck"></div>
+        <button class="play-btn btn--disabled" disabled onclick="play()">Play Card</button>
+
+        <div class="play-board">
+            <div id="deck"></div>
+            <div id="opponent-deck"></div>
+        </div>
     </body>
 
     <script src="script.js"></script>
