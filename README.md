@@ -1,6 +1,6 @@
 # war
 
-master
+master - Play with opponent.
 
 war01 - Starting point.
 
